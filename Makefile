@@ -14,7 +14,7 @@ all:| lint test
 
 .PHONY: lint
 lint: $(HOOKTOUCHFILE)
-	pre-commit run --all-files
+	poetry run pre-commit run --all-files
 
 .PHONY: test
 test: $(VENVTOUCHFILE)
