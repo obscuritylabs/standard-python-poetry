@@ -1,4 +1,4 @@
-# standard-python
+# standard-python-poetry
 
 ## Using this project
 
