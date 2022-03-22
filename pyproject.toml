@@ -1,0 +1,28 @@
+[tool]
+
+[tool.black]
+line-length = 120
+
+[tool.coverage]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+skip_empty = true
+exclude_lines = ["if __name__ == .__main__.:"]
+
+[tool.isort]
+line_length = 120
+
+[tool.mypy]
+strict = true
+
+[tool.pytest.ini_options]
+addopts = "-p no:warnings -ra -q --cov=src/"
+testpaths = ["tests/"]
+
+[tool.vulture]
+min_confidence = 80
+paths = ["src", "tests"]
+sort_by_size = true
+verbose = true
