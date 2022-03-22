@@ -1,14 +1,9 @@
 # Configurable Variables
 
-PYTHON := python3.10
 VENV := .venv
 
 # Computed Variables (Don't touch or modify!!!)
 
-BIN := $(VENV)/bin
-VPYTHON := $(BIN)/$(PYTHON)
-PIP := $(BIN)/pip
-PYTEST := $(BIN)/pytest
 VENVTOUCHFILE := $(VENV)/touchfile
 HOOKTOUCHFILE := .git/hooks/touchfile
 
@@ -22,8 +17,8 @@ lint: $(HOOKTOUCHFILE)
 	pre-commit run --all-files
 
 .PHONY: test
-test: $(PYTEST)
-	$(PYTEST)
+test: $(VENVTOUCHFILE)
+	poetry run pytest
 
 .PHONY: clean
 clean:
@@ -31,17 +26,13 @@ clean:
 
 # Secondary Targets
 
-$(PYTEST): $(VENVTOUCHFILE)
-
-$(HOOKTOUCHFILE): .pre-commit-config.yaml
-	pre-commit install --install-hooks -t pre-commit -t commit-msg
+$(HOOKTOUCHFILE): $(VENVTOUCHFILE) .pre-commit-config.yaml
+	poetry run pre-commit install --install-hooks -t pre-commit -t commit-msg
 	touch $@
 
-$(PIP): $(VENV)
+poetry.lock: pyproject.toml
+	poetry lock --no-update --no-interaction && touch poetry.lock
 
-$(VENVTOUCHFILE): $(PIP)
-	$(PIP) install -e ".[dev]"
+$(VENVTOUCHFILE): poetry.lock
+	poetry install --no-interaction
 	touch $@
-
-$(VENV):
-	$(PYTHON) -m venv $@
