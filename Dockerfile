@@ -13,7 +13,13 @@ ENV PYTHONFAULTHANDLER=1 \
   PATH="/home/notroot/.local/bin:${PATH}"
 WORKDIR /home/notroot/app/
 
+FROM backend-base AS poetry-builder
+RUN pip install --no-cache-dir --no-input poetry
+COPY pyproject.toml poetry.lock* ./
+RUN poetry export --format=requirements.txt --output=/tmp/requirements.txt
+
 FROM backend-base AS runner
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+COPY --from=poetry-builder /tmp/requirements.txt .
+RUN pip install --no-cache-dir --no-input -r requirements.txt
+COPY pyproject.toml .
 COPY src src
