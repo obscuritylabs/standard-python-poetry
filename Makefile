@@ -4,7 +4,10 @@ VENV := .venv
 
 # Computed Variables (Don't touch or modify!!!)
 
+FILES := $(shell find src tests -name "*.py" -o -name "*.js")
 VENVTOUCHFILE := $(VENV)/touchfile
+LINTTOUCHFILE := $(VENV)/lint-touchfile
+TESTTOUCHFILE := $(VENV)/test-touchfile
 HOOKTOUCHFILE := .git/hooks/touchfile
 
 # Primary Targets
@@ -13,12 +16,18 @@ HOOKTOUCHFILE := .git/hooks/touchfile
 all:| lint test
 
 .PHONY: lint
-lint: $(HOOKTOUCHFILE)
+lint: $(LINTTOUCHFILE)
+
+$(LINTTOUCHFILE): $(FILES) $(HOOKTOUCHFILE)
 	poetry run pre-commit run --all-files
+	@touch $@
 
 .PHONY: test
-test: $(VENVTOUCHFILE)
+test: $(TESTTOUCHFILE)
+
+$(TESTTOUCHFILE): $(FILES) $(VENVTOUCHFILE)
 	poetry run pytest
+	@touch $@
 
 .PHONY: clean
 clean:
@@ -28,11 +37,11 @@ clean:
 
 $(HOOKTOUCHFILE): $(VENVTOUCHFILE) .pre-commit-config.yaml
 	poetry run pre-commit install --install-hooks -t pre-commit -t commit-msg
-	touch $@
+	@touch $@
 
 poetry.lock: pyproject.toml
 	poetry lock --no-update --no-interaction && touch poetry.lock
 
 $(VENVTOUCHFILE): poetry.lock
 	poetry install --no-interaction
-	touch $@
+	@touch $@
