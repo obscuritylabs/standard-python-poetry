@@ -13,7 +13,19 @@ line-length = 120
 fail_under = 100
 show_missing = true
 skip_empty = true
-exclude_lines = ["if __name__ == .__main__.:"]
+skip_covered = true
+exclude_lines =[
+    "pragma: no cover",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+
+[tool.coverage.run]
+branch = true
+concurrency = ["multiprocessing"]
+parallel = true
+source = ["src"]
 
 [tool.flake8]
 max_line_length = 120
@@ -24,10 +36,17 @@ docstring_style = "google"
 strictness = "full"
 
 [tool.isort]
+profile = "black"
 line_length = 120
+atomic = true
+combine_as_imports = true
 
 [tool.mypy]
 strict = true
+pretty = true
+show_column_numbers = true
+show_error_context = true
+show_error_codes = true
 
 [tool.poetry]
 name = "example"
@@ -66,8 +85,9 @@ pyupgrade = "^2.31.1"
 vulture = "^2.3"
 
 [tool.pytest.ini_options]
-addopts = "-p no:warnings -ra -q --cov=src/"
+addopts = "--no-header -p no:warnings -ra -q --cov=src/"
 testpaths = ["tests/"]
+norecursedirs = [".*", "*.egg", "build", "dist",]
 
 [tool.vulture]
 min_confidence = 80
