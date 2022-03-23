@@ -1,6 +1,6 @@
 [build-system]
-requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
 
 [tool]
 
@@ -10,16 +10,16 @@ line-length = 120
 [tool.coverage]
 
 [tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+]
 fail_under = 100
 show_missing = true
-skip_empty = true
 skip_covered = true
-exclude_lines =[
-    "pragma: no cover",
-    "raise AssertionError",
-    "raise NotImplementedError",
-    "if __name__ == .__main__.:",
-]
+skip_empty = true
 
 [tool.coverage.run]
 branch = true
@@ -28,31 +28,31 @@ parallel = true
 source = ["src"]
 
 [tool.flake8]
-max_line_length = 120
-ignore = ["B506", "D100", "D104", "S101"]
-exclude = [".git", ".venv", "__pycache__", "build", "dist", "setup.py"]
-max-complexity = 10
 docstring_style = "google"
+exclude = [".git", ".venv", "__pycache__", "build", "dist", "setup.py"]
+ignore = ["B506", "D100", "D104", "S101"]
+max-complexity = 10
+max_line_length = 120
 strictness = "full"
 
 [tool.isort]
-profile = "black"
-line_length = 120
 atomic = true
 combine_as_imports = true
+line_length = 120
+profile = "black"
 
 [tool.mypy]
-strict = true
 pretty = true
 show_column_numbers = true
-show_error_context = true
 show_error_codes = true
+show_error_context = true
+strict = true
 
 [tool.poetry]
+authors = ["Tory Clasen <ToryClasen@gmail.com>"]
+description = ""
 name = "example"
 version = "0.1.0"
-description = ""
-authors = ["Tory Clasen <ToryClasen@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -74,20 +74,29 @@ flake8-docstrings = "^1.6.0"
 flake8-eradicate = "^1.2.0"
 isort = "^5.10.1"
 mypy = "^0.941"
-safety = "^1.10.3"
 pre-commit = "^2.17.0"
 pyproject-flake8 = "^0.0.1-alpha.2"
 pytest = "^7.1.1"
 pytest-clarity = "^1.0.1"
 pytest-cov = "^3.0.0"
 pytest-sugar = "^0.9.4"
+python-semantic-release = "^7.27.0"
 pyupgrade = "^2.31.1"
+safety = "^1.10.3"
 vulture = "^2.3"
 
 [tool.pytest.ini_options]
 addopts = "--no-header -p no:warnings -ra -q --cov=src/"
+norecursedirs = [".*", "*.egg", "build", "dist"]
 testpaths = ["tests/"]
-norecursedirs = [".*", "*.egg", "build", "dist",]
+
+[tool.semantic_release]
+build_command = "poetry build"
+pre_commit_command = "poetry run pre-commit run --all-files"
+repository = false
+upload_to_pypi = false
+upload_to_repository = false
+version_source = "tag"
 
 [tool.vulture]
 min_confidence = 80
